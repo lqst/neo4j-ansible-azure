@@ -1,0 +1,15 @@
+---
+plugin: azure.azcollection.azure_rm
+include_vm_resource_groups:
+  - dev_rg
+auth_source: auto
+
+
+keyed_groups:
+# places each host in a group named 'tag_(tag name)_(tag value)' for each tag on a VM.
+- prefix: tag
+  key: tags
+
+exclude_host_filters:
+# excludes hosts that are powered off
+- powerstate != 'running'

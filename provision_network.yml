@@ -1,0 +1,62 @@
+---
+# Work in progress to set up networking
+- name: Provision network
+  hosts: localhost
+
+  tasks:
+  - name: Create resource group
+    azure.azcollection.azure_rm_resourcegroup:
+      name: "{{ RESOURCE_GROUP }}"
+      location: "{{ LOCATION }}"
+      append_tags: no
+      tags: 
+        environment: "{{ ENVIRONMENT_TAG }}"
+        
+  - name: Create security group that allows SSH
+    azure.azcollection.azure_rm_securitygroup:
+      resource_group: "{{ RESOURCE_GROUP }}"
+      name: "{{ ENVIRONMENT_TAG }}_security_group"
+      rules:
+        - name: SSH
+          protocol: Tcp
+          destination_port_range: 22
+          access: Allow
+          priority: 101
+          direction: Inbound
+
+  - name: Create cluster private DNS zone
+    azure.azcollection.azure_rm_privatednszone:
+      resource_group: "{{ RESOURCE_GROUP }}"
+      name: "{{ CLUSTER_DNS_NAME }}"
+
+  - name: Create virtual network
+    azure.azcollection.azure_rm_virtualnetwork:
+      resource_group: "{{ RESOURCE_GROUP }}"
+      name: "{{ CLUSTER_VNET_NAME }}"
+      address_prefixes: "10.10.0.0/16"
+
+  - name: Add cluster subnet
+    azure.azcollection.azure_rm_subnet:
+      resource_group: "{{ RESOURCE_GROUP }}"
+      name: "{{ CLUSTER_SUBNET_NAME }}"
+      address_prefix: "10.10.0.0/24"
+      virtual_network: "{{ CLUSTER_VNET_NAME }}"
+      security_group: "{{ ENVIRONMENT_TAG }}_security_group"
+
+  - name: Add backend subnet
+    azure.azcollection.azure_rm_subnet:
+      resource_group: "{{ RESOURCE_GROUP }}"
+      name: "{{ BACKEND_SUBNET_NAME }}"
+      address_prefix: "10.10.1.0/24"
+      virtual_network: "{{ CLUSTER_VNET_NAME }}"
+      security_group: "{{ ENVIRONMENT_TAG }}_security_group"
+
+  - name: Create a virtual network link for the dns
+    azure.azcollection.azure_rm_privatednszonelink:
+      resource_group: "{{ RESOURCE_GROUP }}"
+      name: dns_vnet_link
+      zone_name: "{{ CLUSTER_DNS_NAME }}"
+      virtual_network: "{{ CLUSTER_VNET_NAME }}"
+      registration_enabled: false
+      state: present
+

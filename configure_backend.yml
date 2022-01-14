@@ -1,0 +1,30 @@
+---
+# backend for simple testing
+- name: Provision backend
+  hosts: tag_applicationRole_backend
+  remote_user: azureuser
+  gather_facts: no
+  
+  tasks:
+  - name: Install java
+    apt:
+      name: openjdk-11-jre-headless
+      state: present
+    become: yes
+  
+  - name: Neo4j apt key 
+    apt_key:
+      url: https://debian.neo4j.com/neotechnology.gpg.key
+    become: yes
+
+  - name: Neo4j repo
+    apt_repository:
+      repo: deb https://debian.neo4j.com stable 4.3
+    become: yes
+
+  - name: Neo4j cypher shell
+    apt:
+      name: cypher-shell
+      state: present
+    become: yes
+

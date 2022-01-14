@@ -1,0 +1,10 @@
+---
+# DEV vars
+ENVIRONMENT_TAG: dev
+RESOURCE_GROUP: dev_rg
+LOCATION: northeurope
+CLUSTER_VNET_NAME: dev_vnet
+CLUSTER_SUBNET_NAME: dev_subnet
+BACKEND_SUBNET_NAME: dev_backend_subnet
+CLUSTER_DNS_NAME: cluster.dev
+KEY_DATA: "put the contents of your public key here"

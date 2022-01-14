@@ -1,0 +1,78 @@
+---
+# install/configure neo4j cluster in progress
+- name: Provision neo4j cluster
+  hosts: tag_applicationRole_corenode
+  remote_user: azureuser
+  gather_facts: no
+  
+
+  tasks:
+  #- debug: var=hostvars[inventory_hostname]['public_ipv4_addresses'][0]
+  #- debug: var=hostvars[inventory_hostname]['private_ipv4_addresses'][0]
+  #- debug: var="{{ groups[tag_applicationRole_corenode]['computer_name'] | list }}"
+  
+  - name: Install java
+    apt:
+      name: openjdk-11-jre-headless
+      state: present
+    become: yes
+  
+  - name: Neo4j apt key 
+    apt_key:
+      url: https://debian.neo4j.com/neotechnology.gpg.key
+    become: yes
+
+  - name: Neo4j repo
+    apt_repository:
+      repo: deb https://debian.neo4j.com stable 4.3
+    become: yes
+
+  - name: Neo4j-enterprise debconf
+    ansible.builtin.debconf:
+      name: neo4j-enterprise
+      question: neo4j/question
+      value: 'I ACCEPT'
+      vtype: select
+    become: yes
+
+  - name: Neo4j-enterprise
+    apt:
+      name: neo4j-enterprise
+      state: present
+    become: yes
+
+
+  - name: Neo4j config
+    ansible.builtin.template: 
+      src: neo4j.conf.template
+      dest: /etc/neo4j/neo4j.conf
+      owner: neo4j
+      group: root
+    vars:
+      external_advertised_address: "{{ hostvars[inventory_hostname]['computer_name'] }}.{{ CLUSTER_DNS_NAME  }}"
+      host_name: "{{ hostvars[inventory_hostname]['computer_name'] }}"
+      initial_discovery_members: "core1:5000,core2:5000,core3:5000"
+    become: yes
+
+  - name: Purge data
+    ansible.builtin.file:
+      path: /var/lib/neo4j/data
+      state: absent
+    become: yes
+  
+  - name: Neo4j service
+    ansible.builtin.service: 
+      name: neo4j
+      state: restarted
+    become: yes
+
+  - name: DNS registration
+    azure.azcollection.azure_rm_privatednsrecordset:
+      resource_group: "{{ RESOURCE_GROUP }}"
+      zone_name: "{{ CLUSTER_DNS_NAME  }}"
+      relative_name: "{{ hostvars[inventory_hostname]['computer_name'] }}"
+      record_type: A
+      records: 
+        - entry: "{{hostvars[inventory_hostname]['private_ipv4_addresses'][0]}}"
+    delegate_to: localhost
+
