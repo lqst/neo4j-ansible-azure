@@ -1,0 +1,64 @@
+---
+- name: Install java
+  apt:
+    name: openjdk-11-jre-headless
+    state: present
+  become: yes
+
+- name: Neo4j apt key
+  apt_key:
+    url: https://debian.neo4j.com/neotechnology.gpg.key
+  become: yes
+
+- name: Neo4j repo
+  apt_repository:
+    repo: deb https://debian.neo4j.com stable 4.4
+  become: yes
+  notify:
+    - restart neo4j
+
+- name: Neo4j-enterprise debconf
+  ansible.builtin.debconf:
+    name: neo4j-enterprise
+    question: neo4j/question
+    value: 'I ACCEPT'
+    vtype: select
+  become: yes
+
+- name: Neo4j-enterprise
+  apt:
+    name: neo4j-enterprise
+    state: latest
+  become: yes
+  notify:
+    - restart neo4j
+
+- name: Neo4j config
+  ansible.builtin.template:
+    src: neo4j.conf.j2
+    dest: /etc/neo4j/neo4j.conf
+    owner: neo4j
+    group: root
+  vars:
+    external_advertised_address: "{{ hostvars[inventory_hostname]['computer_name'] }}.{{ CLUSTER_DNS_NAME  }}"
+    host_name: "{{ hostvars[inventory_hostname]['computer_name'] }}"
+    initial_discovery_members: "core1:5000,core2:5000,core3:5000"
+  become: yes
+  notify:
+    - restart neo4j
+
+#- name: Purge data
+#  ansible.builtin.file:
+#    path: /var/lib/neo4j/data
+#    state: absent
+#  become: yes
+
+- name: DNS registration
+  azure.azcollection.azure_rm_privatednsrecordset:
+    resource_group: "{{ RESOURCE_GROUP }}"
+    zone_name: "{{ CLUSTER_DNS_NAME  }}"
+    relative_name: "{{ hostvars[inventory_hostname]['computer_name'] }}"
+    record_type: A
+    records:
+      - entry: "{{ hostvars[inventory_hostname]['private_ipv4_addresses'][0] }}"
+  delegate_to: localhost

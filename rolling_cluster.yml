@@ -3,5 +3,8 @@
   hosts: tag_applicationRole_corenode
   remote_user: azureuser
   gather_facts: no
+  serial: 1  # Batch size 1 = one at a time
   roles:
     - corenode
+
+#  Todo: call dbms.upgrade();

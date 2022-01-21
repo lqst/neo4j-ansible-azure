@@ -9,9 +9,9 @@
       name: "{{ RESOURCE_GROUP }}"
       location: "{{ LOCATION }}"
       append_tags: no
-      tags: 
+      tags:
         environment: "{{ ENVIRONMENT_TAG }}"
-        
+
   - name: Create security group that allows SSH
     azure.azcollection.azure_rm_securitygroup:
       resource_group: "{{ RESOURCE_GROUP }}"
@@ -59,4 +59,3 @@
       virtual_network: "{{ CLUSTER_VNET_NAME }}"
       registration_enabled: false
       state: present
-
