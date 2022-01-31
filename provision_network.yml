@@ -23,6 +23,13 @@
           access: Allow
           priority: 101
           direction: Inbound
+        - name: Prometheus metrics
+          protocol: Tcp
+          destination_port_range: 2004
+          access: Allow
+          priority: 102
+          direction: Inbound
+    tags: security_group
 
   - name: Create security group for internal cluster comm
     azure.azcollection.azure_rm_securitygroup:

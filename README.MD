@@ -24,15 +24,17 @@ Currently using KEY_DATA to store my public ssh key in dev/group_vars/all.yml (u
 ### List hosts with az cli
 I have not found a clean way of doing it with ansible...
 ```bash
-az vm list-ip-addresses --query "[*].virtualMachine.{name: name, nat: network.privateIpAddresses[0], ip: network.publicIpAddresses[0].ipAddress}" -o tsv
+az vm list-ip-addresses --query "[*].virtualMachine.{name: name, ip: network.publicIpAddresses[0].ipAddress}" -o tsv
 ```
 
 ### Print out hostvars
 ansible tag_applicationRole_corenode -m debug -a 'var=hostvars' -i dev
 
+### Print public ip addresses
+ansible tag_applicationRole_corenode -m debug -a 'var=ansible_host' -i dev
 
 ## Todo
 
 - [ ] Better check for healthy cluster on rolling upgrade
-- [ ] Additional NIC for intra cluster communication
+- [x] Additional NIC for intra cluster communication
 - [ ] Move things to the right places

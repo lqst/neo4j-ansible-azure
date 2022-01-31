@@ -5,6 +5,7 @@
     name: neo4j
     state: restarted
   become: yes
+  register: neo4j_restarted 
 
 - name: wait for it to be responsive
   uri:
@@ -16,3 +17,4 @@
   until: _result.json[0].healthy == true
   retries: 300
   delay: 5
+  when: neo4j_restarted
