@@ -10,6 +10,7 @@
       name: "{{ item.vmname }}"
       vm_size: Standard_DS1_v2
       zones: "{{ item.zone }}"
+      network_interface_names: ["{{ item.pub_nic }}", "{{ item.int_nic }}"]
       managed_disk_type: Standard_LRS
       os_disk_size_gb: 30  # Min 30 gb for ubuntu vm image is required
       os_disk_caching: ReadWrite
@@ -27,9 +28,9 @@
       tags:
         applicationRole: corenode
     with_items:
-      - {vmname: 'core1', zone: [1]}
-      - {vmname: 'core2', zone: [2]}
-      - {vmname: 'core3', zone: [3]}
+      - {vmname: 'core1', zone: [1], pub_nic: 'core1_pub', int_nic: 'core1_int'}
+      - {vmname: 'core2', zone: [2], pub_nic: 'core2_pub', int_nic: 'core2_int'}
+      - {vmname: 'core3', zone: [3], pub_nic: 'core3_pub', int_nic: 'core3_int'}
 
   - name: Create Backend VMs
     azure.azcollection.azure_rm_virtualmachine:

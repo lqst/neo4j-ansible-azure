@@ -24,6 +24,18 @@
           priority: 101
           direction: Inbound
 
+  - name: Create security group for internal cluster comm
+    azure.azcollection.azure_rm_securitygroup:
+      resource_group: "{{ RESOURCE_GROUP }}"
+      name: "{{ ENVIRONMENT_TAG }}_internal_security_group"
+      rules:
+        - name: SSH
+          protocol: Tcp
+          destination_port_range: 22
+          access: Allow
+          priority: 101
+          direction: Inbound
+
   - name: Create cluster private DNS zone
     azure.azcollection.azure_rm_privatednszone:
       resource_group: "{{ RESOURCE_GROUP }}"
@@ -42,6 +54,61 @@
       address_prefix: "10.10.0.0/24"
       virtual_network: "{{ CLUSTER_VNET_NAME }}"
       security_group: "{{ ENVIRONMENT_TAG }}_security_group"
+
+  - name: Add internal cluster subnet
+    azure.azcollection.azure_rm_subnet:
+      resource_group: "{{ RESOURCE_GROUP }}"
+      name: "{{ CLUSTER_SUBNET_NAME }}_internal"
+      address_prefix: "10.10.2.0/24"
+      virtual_network: "{{ CLUSTER_VNET_NAME }}"
+      security_group: "{{ ENVIRONMENT_TAG }}_internal_security_group"
+
+  - name: Create a network interface with private IP address only (for intra cluster communication)
+    azure.azcollection.azure_rm_networkinterface:
+      name: "{{ item.nic_name }}"
+      resource_group: "{{ RESOURCE_GROUP }}"
+      virtual_network: "{{ CLUSTER_VNET_NAME }}"
+      subnet_name: "{{ CLUSTER_SUBNET_NAME }}_internal"
+      security_group: "{{ ENVIRONMENT_TAG }}_internal_security_group"
+      ip_configurations:
+        - name: ipconfig_intra
+          primary: True
+    with_items:
+      - {nic_name: 'core1_int'}
+      - {nic_name: 'core2_int'}
+      - {nic_name: 'core3_int'}
+    tags: internal_nic
+
+  - name: Create a public ip address
+    azure.azcollection.azure_rm_publicipaddress:
+      resource_group: "{{ RESOURCE_GROUP }}"
+      name: "{{ item.pub_ip_name }}"
+      allocation_method: static
+      sku: standard
+    with_items:
+      - {pub_ip_name: 'core1_pub_ip'}
+      - {pub_ip_name: 'core2_pub_ip'}
+      - {pub_ip_name: 'core3_pub_ip'}
+    tags:
+      - public_ip
+
+  - name: Create a network interface with public ip address (for SSH )
+    azure.azcollection.azure_rm_networkinterface:
+      name: "{{ item.nic_name }}"
+      resource_group: "{{ RESOURCE_GROUP }}"
+      virtual_network: "{{ CLUSTER_VNET_NAME }}"
+      subnet_name: "{{ CLUSTER_SUBNET_NAME }}"
+      security_group: "{{ ENVIRONMENT_TAG }}_security_group"
+      ip_configurations:
+        - name: ipconfig_client
+          public_ip_address_name: "{{ item.pub_ip_name }}"
+          primary: True
+    with_items:
+      - {nic_name: 'core1_pub', pub_ip_name: 'core1_pub_ip'}
+      - {nic_name: 'core2_pub', pub_ip_name: 'core2_pub_ip'}
+      - {nic_name: 'core3_pub', pub_ip_name: 'core3_pub_ip'}
+    tags:
+      - public_ip
 
   - name: Add backend subnet
     azure.azcollection.azure_rm_subnet:

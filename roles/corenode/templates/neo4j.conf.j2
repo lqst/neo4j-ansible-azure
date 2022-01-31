@@ -84,7 +84,7 @@ dbms.tx_state.memory_allocation=ON_HEAP
 
 # With default configuration Neo4j only accepts local connections.
 # To accept non-local connections, uncomment this line:
-dbms.default_listen_address=0.0.0.0
+dbms.default_listen_address={{ pub_nic }}
 
 # You can also choose a specific network interface, and configure a non-default
 # port for each connector, by setting their individual listen_address.
@@ -311,7 +311,8 @@ causal_clustering.initial_discovery_members={{ initial_discovery_members }}
 # Use 0.0.0.0 to bind to any network interface on the machine. If you want to only use a specific interface
 # (such as a private ip address on AWS, for example) then use that ip address instead.
 # If you don't know what value to use here, use this machines ip address.
-# causal_clustering.discovery_listen_address={{ host_name }}:5000
+causal_clustering.discovery_listen_address={{ int_nic }}:5000
+causal_clustering.discovery_advertised_address={{ int_nic }}:5000
 
 # Network interface and port for the transaction shipping server to listen on.
 # Please note that it is also possible to run the backup client against this port so always limit access to it via the
@@ -319,13 +320,13 @@ causal_clustering.initial_discovery_members={{ initial_discovery_members }}
 # any network on this machine, us 0.0.0.0. If you want to constrain communication to a specific network address
 # (such as a private ip on AWS, for example) then use that ip address instead.
 # If you don't know what value to use here, use this machines ip address.
-# causal_clustering.transaction_listen_address={{ host_name }}:6000
+causal_clustering.transaction_listen_address={{ int_nic }}:6000
 
 # Network interface and port for the RAFT server to listen on. If you want to allow for messages to be read from
 # any network on this machine, us 0.0.0.0. If you want to constrain communication to a specific network address
 # (such as a private ip on AWS, for example) then use that ip address instead.
 # If you don't know what value to use here, use this machines ip address.
-# causal_clustering.raft_listen_address={{ host_name }}:7000
+causal_clustering.raft_listen_address={{ int_nic }}:7000
 
 # List a set of names for groups to which this server should belong. This
 # is a comma-separated list and names should only use alphanumericals
@@ -395,11 +396,11 @@ causal_clustering.initial_discovery_members={{ initial_discovery_members }}
 
 # Address and port that this machine advertises that it's RAFT server is listening at. Should be a
 # specific network address. If you are unsure about what value to use here, use this machine's ip address.
-# causal_clustering.raft_advertised_address={{ host_name }}:7000
+causal_clustering.raft_advertised_address={{ int_nic }}:7000
 
 # Address and port that this machine advertises that it's transaction shipping server is listening at. Should be a
 # specific network address. If you are unsure about what value to use here, use this machine's ip address.
-# causal_clustering.transaction_advertised_address={{ host_name }}:6000
+causal_clustering.transaction_advertised_address={{ int_nic }}:6000
 
 # The time window within which the loss of the leader is detected and the first re-election attempt is held.
 # The window should be significantly larger than typical communication delays to make conflicts unlikely.
