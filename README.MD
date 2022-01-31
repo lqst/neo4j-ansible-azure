@@ -27,6 +27,9 @@ I have not found a clean way of doing it with ansible...
 az vm list-ip-addresses --query "[*].virtualMachine.{name: name, nat: network.privateIpAddresses[0], ip: network.publicIpAddresses[0].ipAddress}" -o tsv
 ```
 
+### Print out hostvars
+ansible tag_applicationRole_corenode -m debug -a 'var=hostvars' -i dev
+
 
 ## Todo
 

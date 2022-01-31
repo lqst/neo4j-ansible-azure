@@ -42,10 +42,14 @@
   vars:
     external_advertised_address: "{{ hostvars[inventory_hostname]['computer_name'] }}.{{ CLUSTER_DNS_NAME }}"
     host_name: "{{ hostvars[inventory_hostname]['computer_name'] }}"
-    initial_discovery_members: "core1:5000,core2:5000,core3:5000"
+    #initial_discovery_members: "core1:5000,core2:5000,core3:5000"
+    initial_discovery_members: "{% for host in groups['tag_applicationRole_corenode'] -%} {{ hostvars[host]['private_ipv4_addresses'][1]}}:5000{% if not loop.last %},{% endif %}{%- endfor %}"
+    pub_nic: "{{ hostvars[inventory_hostname]['private_ipv4_addresses'][0] }}"
+    int_nic: "{{ hostvars[inventory_hostname]['private_ipv4_addresses'][1] }}"
   become: yes
   notify:
     - restart neo4j
+  tags: neo4j_conf
 
 - name: DNS registration
   azure.azcollection.azure_rm_privatednsrecordset:
