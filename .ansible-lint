@@ -1,0 +1,10 @@
+---
+exclude_paths:
+  - .cache/  # implicit unless exclude_paths is defined in config
+  - .vscode/
+  - ansible/ # python virtual environment
+
+skip_list:
+  - become
+  - append_tags
+  - gather_facts

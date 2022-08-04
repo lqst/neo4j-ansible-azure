@@ -1,0 +1,11 @@
+{
+    "java.completion.enabled": false,
+    "java.debug.settings.enableRunDebugCodeLens": false,
+    "java.test.editor.enableShortcuts": false,
+    "yaml.schemas": {
+        "https://raw.githubusercontent.com/ansible-community/schemas/main/f/ansible-playbook.json": [
+            "file:///Users/haklof/projects/public/neo4j-ansible-azure/provision_network.yml",
+            "file:///Users/haklof/projects/public/neo4j-ansible-azure/provision_vms.yml"
+        ]
+    }
+}

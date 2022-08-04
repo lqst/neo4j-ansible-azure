@@ -5,13 +5,19 @@ This is just me practicing/having a bit of fun. For now keeping a very flat stru
 ## Setup
 Install ansible (run in python venv for instance)
 
+Remark: On m1 mac I had issues with installing cryptography. Fix:
+```shell
+export LDFLAGS="-L/opt/homebrew/opt/openssl@1.1/lib"
+export CPPFLAGS="-I/opt/homebrew/opt/openssl@1.1/include"
+```
+
 ```shell
 python3 -m venv ansible
 source ansible/bin/activate
 python3 -m pip install ansible
 python3 -m pip install "ansible-lint[yamllint]"
 ansible-galaxy collection install azure.azcollection
-pip install -r ~/.ansible/collections/ansible_collections/azure/azcollection/requirements-azure.txt
+python3 -m pip install -r ~/.ansible/collections/ansible_collections/azure/azcollection/requirements-azure.txt
 ```
 
 
