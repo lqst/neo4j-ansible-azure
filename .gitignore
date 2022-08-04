@@ -132,3 +132,4 @@ dmypy.json
 
 # Artifacts
 *.tar.gz
+*.deb

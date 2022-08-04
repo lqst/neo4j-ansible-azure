@@ -1,21 +1,22 @@
 ---
 - name: Install java
   apt:
-    name: openjdk-11-jre-headless
+    name: openjdk-17-jre-headless
     state: present
+    cache_valid_time: 604800 # one week
   become: yes
 
-- name: Neo4j apt key
-  apt_key:
-    url: https://debian.neo4j.com/neotechnology.gpg.key
-  become: yes
+#- name: Neo4j apt key
+#  apt_key:
+#    url: https://debian.neo4j.com/neotechnology.gpg.key
+#  become: yes
 
-- name: Neo4j repo
-  apt_repository:
-    repo: deb https://debian.neo4j.com stable 4.4
-  become: yes
-  notify:
-    - restart neo4j
+#- name: Neo4j repo
+#  apt_repository:
+#    repo: deb https://debian.neo4j.com stable 4.4
+#  become: yes
+#  notify:
+#    - restart neo4j
 
 - name: Neo4j-enterprise debconf
   ansible.builtin.debconf:
@@ -25,10 +26,41 @@
     vtype: select
   become: yes
 
+- name: Make sure dist directory exists
+  ansible.builtin.file:
+    path: /dist
+    state: directory
+  become: yes
+
+- name: Copy cypher shell deb package
+  ansible.builtin.copy:
+    src: cypher-shell_5.0.0_drop05.0_all.deb
+    dest: /dist/cypher-shell_5.0.0_drop05.0_all.deb
+    owner: root
+    group: root
+  become: yes
+
+- name: Copy neo4j deb package
+  ansible.builtin.copy:
+    src: neo4j-enterprise_5.0.0_drop05.0_all.deb
+    dest: /dist/neo4j-enterprise_5.0.0_drop05.0_all.deb
+    owner: root
+    group: root
+  become: yes
+
+
+- name: cypher shell
+  apt:
+    state: present
+    deb: /dist/cypher-shell_5.0.0_drop05.0_all.deb
+  become: yes
+  notify:
+    - restart neo4j
+
 - name: Neo4j-enterprise
   apt:
-    name: neo4j-enterprise
-    state: latest
+    state: present
+    deb: /dist/neo4j-enterprise_5.0.0_drop05.0_all.deb
   become: yes
   notify:
     - restart neo4j
