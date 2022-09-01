@@ -31,6 +31,8 @@
       - {vmname: 'core1', zone: [1], pub_nic: 'core1_pub', int_nic: 'core1_int'}
       - {vmname: 'core2', zone: [2], pub_nic: 'core2_pub', int_nic: 'core2_int'}
       - {vmname: 'core3', zone: [3], pub_nic: 'core3_pub', int_nic: 'core3_int'}
+      - {vmname: 'core4', zone: [1], pub_nic: 'core4_pub', int_nic: 'core4_int'}
+      - {vmname: 'core5', zone: [2], pub_nic: 'core5_pub', int_nic: 'core5_int'}
 
   - name: Create Backend VMs
     azure.azcollection.azure_rm_virtualmachine:

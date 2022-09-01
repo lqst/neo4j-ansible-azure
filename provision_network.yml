@@ -84,6 +84,8 @@
       - {nic_name: 'core1_int'}
       - {nic_name: 'core2_int'}
       - {nic_name: 'core3_int'}
+      - {nic_name: 'core4_int'}
+      - {nic_name: 'core5_int'}
     tags: internal_nic
 
   - name: Create a public ip address
@@ -96,6 +98,8 @@
       - {pub_ip_name: 'core1_pub_ip'}
       - {pub_ip_name: 'core2_pub_ip'}
       - {pub_ip_name: 'core3_pub_ip'}
+      - {pub_ip_name: 'core4_pub_ip'}
+      - {pub_ip_name: 'core5_pub_ip'}
     tags:
       - public_ip
 
@@ -114,6 +118,8 @@
       - {nic_name: 'core1_pub', pub_ip_name: 'core1_pub_ip'}
       - {nic_name: 'core2_pub', pub_ip_name: 'core2_pub_ip'}
       - {nic_name: 'core3_pub', pub_ip_name: 'core3_pub_ip'}
+      - {nic_name: 'core4_pub', pub_ip_name: 'core4_pub_ip'}
+      - {nic_name: 'core5_pub', pub_ip_name: 'core5_pub_ip'}
     tags:
       - public_ip
 

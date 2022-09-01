@@ -1,10 +1,7 @@
 ---
 - name: Configure neo4j cluster core nodes
-  hosts: tag_applicationRole_corenode
+  hosts: [core4,core5]
   remote_user: azureuser
   gather_facts: no
-  #serial: 1  # Batch size 1 = one at a time
   roles:
     - corenode
-
-#  Todo: call dbms.upgrade();

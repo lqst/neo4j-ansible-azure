@@ -26,7 +26,7 @@ server.directories.import=/var/lib/neo4j/import
 
 # Whether requests to Neo4j are authenticated.
 # To disable authentication, uncomment this line
-#dbms.security.auth_enabled=false
+dbms.security.auth_enabled=false
 
 # Number of databases in Neo4j is limited.
 # To change this limit please uncomment and adapt following setting:
@@ -290,7 +290,8 @@ server.https.advertised_address={{external_advertised_address}}:7473
 # CORE - Core member of the cluster, part of the consensus quorum.
 # READ_REPLICA - Read replica in the cluster, an eventually-consistent read-only instance of the database.
 # To operate this Neo4j instance in Causal Clustering mode as a core member, uncomment this line:
-dbms.mode=CORE
+# dbms.mode=CORE
+server.cluster.initial_mode_constraint=NONE
 
 # A comma-separated list of the address and port for which to reach all other members of the cluster. It must be in the
 # host:port format. For each machine in the cluster, the address will usually be the public ip address of that machine.
@@ -807,3 +808,7 @@ server.windows_service_name=neo4j
 #********************************************************************
 # Other Neo4j system properties
 #********************************************************************
+
+# Fabric
+# internal.fabric.enabled_by_default=true
+# fabric.database.name=fabric
