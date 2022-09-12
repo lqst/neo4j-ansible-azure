@@ -57,7 +57,7 @@ CREATE DATABASE db2 OPTIONS {primaries: 3, secondaries:0};
 
 Enable new servers
 ```
-CALL unsupported.dbms.cluster.enableServer("<uuid>"); // two times
+ENABLE SERVER "<uuid>" // two times
 CREATE DATABASE db3 OPTIONS {primaries: 3, secondaries:2};
 ```
 
@@ -97,4 +97,12 @@ CREATE DATABASE db3 OPTIONS {primaries: 3, secondaries:2};
 Other fun things
 ```
 CREATE DATABASE db4 OPTIONS {primaries: 1, secondaries:4};
+
+
+CREATE DATABASE movies OPTIONS { existingData: "use",
+    seedURI: "file:///backup/movies.backup",
+    primaries: 3, secondaries:2
+};
+
+
 ```

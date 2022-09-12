@@ -56,8 +56,8 @@
 
 - name: Copy neo4j deb package
   ansible.builtin.copy:
-    src: neo4j-enterprise_5.0.0_dev_all_18272.deb
-    dest: /dist/neo4j-enterprise_5.0.0_dev_all_18272.deb
+    src: neo4j-enterprise_5.0.0_dev_all_18426.deb
+    dest: /dist/neo4j-enterprise_5.0.0_dev_all_18426.deb
     owner: root
     group: root
   become: yes
@@ -74,7 +74,7 @@
 - name: Neo4j-enterprise
   apt:
     state: present
-    deb: /dist/neo4j-enterprise_5.0.0_dev_all_18272.deb
+    deb: /dist/neo4j-enterprise_5.0.0_dev_all_18426.deb
   become: yes
   notify:
     - restart neo4j
@@ -105,3 +105,21 @@
     records:
       - entry: "{{ hostvars[inventory_hostname]['private_ipv4_addresses'][0] }}"
   delegate_to: localhost
+
+- name: Make sure backup directory exists
+  ansible.builtin.file:
+    path: /backup
+    state: directory
+    owner: neo4j
+    group: neo4j
+  become: yes
+  tags: backups
+  
+- name: Copy movie backup to server
+  ansible.builtin.copy:
+    src: movies.backup
+    dest: /backup/movies.backup
+    owner: neo4j
+    group: neo4j
+  become: yes
+  tags: backups
