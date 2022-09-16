@@ -56,8 +56,8 @@
 
 - name: Copy neo4j deb package
   ansible.builtin.copy:
-    src: neo4j-enterprise_5.0.0_dev_all_18426.deb
-    dest: /dist/neo4j-enterprise_5.0.0_dev_all_18426.deb
+    src: neo4j-enterprise_5.0.0_dev_all_17022.deb
+    dest: /dist/neo4j-enterprise_5.0.0_dev_all_17022.deb
     owner: root
     group: root
   become: yes
@@ -74,7 +74,7 @@
 - name: Neo4j-enterprise
   apt:
     state: present
-    deb: /dist/neo4j-enterprise_5.0.0_dev_all_18426.deb
+    deb: /dist/neo4j-enterprise_5.0.0_dev_all_17022.deb
   become: yes
   notify:
     - restart neo4j

@@ -89,7 +89,7 @@ SHOW SERVERS;  // Now with state free
 
 Enable it again
 ```
-CALL unsupported.dbms.cluster.enableServer("<uuid>");
+ENABLE SERVER "<uuid>" 
 CREATE DATABASE db3 OPTIONS {primaries: 3, secondaries:2};
 ```
 
@@ -99,10 +99,7 @@ Other fun things
 CREATE DATABASE db4 OPTIONS {primaries: 1, secondaries:4};
 
 
-CREATE DATABASE movies OPTIONS { existingData: "use",
-    seedURI: "file:///backup/movies.backup",
-    primaries: 3, secondaries:2
-};
 
+CREATE DATABASE movies TOPOLOGY 3 PRIMARIES 2 SECONDARIES OPTIONS { existingData: "use", seedURI: "file:///backup/movies.backup"};
 
 ```
