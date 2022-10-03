@@ -48,10 +48,16 @@
       resource_group: "{{ RESOURCE_GROUP }}"
       name: "{{ CLUSTER_DNS_NAME }}"
 
-  - name: Create virtual network
+  - name: Create cluster virtual network
     azure.azcollection.azure_rm_virtualnetwork:
       resource_group: "{{ RESOURCE_GROUP }}"
       name: "{{ CLUSTER_VNET_NAME }}"
+      address_prefixes: "10.10.0.0/16"
+  
+  - name: Create backend virtual network
+    azure.azcollection.azure_rm_virtualnetwork:
+      resource_group: "{{ RESOURCE_GROUP }}"
+      name: "{{ BACKEND_VNET_NAME }}"
       address_prefixes: "10.10.0.0/16"
 
   - name: Add cluster subnet
@@ -121,8 +127,8 @@
     azure.azcollection.azure_rm_subnet:
       resource_group: "{{ RESOURCE_GROUP }}"
       name: "{{ BACKEND_SUBNET_NAME }}"
-      address_prefix: "10.10.1.0/24"
-      virtual_network: "{{ CLUSTER_VNET_NAME }}"
+      address_prefix: "10.10.0.0/24"
+      virtual_network: "{{ BACKEND_VNET_NAME }}"
       security_group: "{{ ENVIRONMENT_TAG }}_security_group"
 
   - name: Create a virtual network link for the dns
@@ -130,6 +136,6 @@
       resource_group: "{{ RESOURCE_GROUP }}"
       name: dns_vnet_link
       zone_name: "{{ CLUSTER_DNS_NAME }}"
-      virtual_network: "{{ CLUSTER_VNET_NAME }}"
+      virtual_network: "{{ BACKEND_VNET_NAME }}"
       registration_enabled: false
       state: present

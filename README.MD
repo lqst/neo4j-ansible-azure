@@ -37,7 +37,7 @@ az vm list-ip-addresses --query "[*].virtualMachine.{name: name, ip: network.pub
 ansible tag_applicationRole_corenode -m debug -a 'var=hostvars' -i dev
 
 ### Print public ip addresses
-ansible tag_applicationRole_corenode -m debug -a 'var=ansible_host' -i dev
+ansible tag_applicationRole_corenode,tag_applicationRole_backend -m debug -a 'var=ansible_host,private_ipv4_addresses'  -i dev
 
 ## Todo
 
