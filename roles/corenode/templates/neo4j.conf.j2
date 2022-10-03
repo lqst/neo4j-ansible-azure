@@ -120,11 +120,13 @@ dbms.connector.https.advertised_address={{external_advertised_address}}:7473
 
 # Cluster Routing Connector. Enables the opening of an additional port to allow
 # for internal communication using the same security configuration as CLUSTER
-#dbms.routing.enabled=false
+dbms.routing.enabled=true
+
+dbms.routing.default_router=SERVER
 
 # Customize the listen address and advertised address used for the routing connector.
-#dbms.routing.listen_address=0.0.0.0:7688
-#dbms.routing.advertised_address=:7688
+dbms.routing.listen_address={{ int_nic }}:7688
+dbms.routing.advertised_address={{ int_nic }}:7688
 
 # Number of Neo4j worker threads.
 #dbms.threads.worker_count=
